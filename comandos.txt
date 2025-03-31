@@ -1,0 +1,6 @@
+# Instalar:
+pip install fastapi uvicorn python-multipart jinja2 PyMuPDF
+pip install Pillow
+python.exe -m pip install --upgrade pip
+
+uvicorn main:app
