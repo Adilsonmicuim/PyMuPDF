@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Compactar PDFs</title>
+    <title>Compactar PDF</title>
+    <link rel="stylesheet" href="/static/style.css">
     <script defer src="/static/script.js"></script>
 </head>
 <body>
-<h1>Compactar PDFs</h1>
-<form id="upload-form">
-    <input type="file" name="files" multiple accept="application/pdf">
-    <button type="submit">Compactar</button>
-</form>
-<div id="status"></div>
+<div class="container">
+    <h1>💫 Compactador de PDFs</h1>
+    <form id="upload-form">
+        <input type="file" name="files" id="file-input" multiple accept="application/pdf" required>
+        <p id="file-count">Nenhum arquivo selecionado</p>
+        <button type="submit">Compactar Arquivo(s)</button>
+    </form>
+    <div id="status"></div>
+</div>
 </body>
 </html>

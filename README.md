@@ -1,4 +1,4 @@
-# PyMuPDF
+# Compactar PDF usando PyMuPDF
 
 ### Root Project
 ```python
@@ -7,6 +7,8 @@ pdf_compressor/
 ├── templates/
 │   └── index.html
 ├── static/
-│   └── script.js
-
+│   ├── script.js
+│   └── style.css
 ```
+
+<img src="docs/IMG31032025.jpg">
