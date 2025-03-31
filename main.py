@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.background import BackgroundTask
+from typing import Union
 
 import fitz  # PyMuPDF
 import os
@@ -35,11 +36,14 @@ def compress_pdf(input_path, output_path, quality=40):
             img_pil = Image.open(BytesIO(image_bytes))
             buf = BytesIO()
             img_pil.save(buf, format="JPEG", quality=quality)
-
             page.replace_image(xref, stream=buf.getvalue())
 
     doc.save(output_path, garbage=4, deflate=True)
     doc.close()
+
+    # 🧪 Verifica se o arquivo realmente foi salvo
+    if not os.path.exists(output_path):
+        raise Exception(f"Arquivo compactado não foi criado: {output_path}")
 
 
 def clear_upload_folder():
@@ -57,7 +61,10 @@ async def index(request: Request):
 
 
 @app.post("/upload/")
-async def upload(files: list[UploadFile] = File(...)):
+async def upload(files: Union[UploadFile, list[UploadFile]] = File(...)):
+    if isinstance(files, UploadFile):
+        files = [files]
+
     compressed_files = []
     temp_files = []
 
@@ -80,16 +87,7 @@ async def upload(files: list[UploadFile] = File(...)):
 
         temp_files.extend([input_path, output_path])
 
-    if len(compressed_files) == 1:
-        file_info = compressed_files[0]
-        return FileResponse(
-            file_info["path"],
-            media_type="application/pdf",
-            filename=file_info["original_name"],
-            background=BackgroundTask(clear_upload_folder)
-        )
-
-    # Mais de um arquivo? Cria ZIP
+    # Sempre gera ZIP, mesmo se for só 1
     zip_name = os.path.join(UPLOAD_FOLDER, f"compressed_{uuid.uuid4().hex[:6]}.zip")
     with zipfile.ZipFile(zip_name, "w") as zipf:
         for file in compressed_files:
